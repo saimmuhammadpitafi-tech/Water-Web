@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Salar Water Plant - سالار واٹر پلانٹ</title>
+    <!-- PWA Meta tags for Mobile App experience -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0284c7">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & N Nastaliq Urdu -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Nastaliq Urdu', 'sans-serif'],
+                        urdu: ['Noto Nastaliq Urdu', 'sans-serif'],
+                    },
+                    colors: {
+                        water: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Nastaliq Urdu', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        #intro-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-card, #printable-card * {
+                visibility: visible;
+            }
+            #printable-card {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-water-500 selection:text-white">
+
+    <!-- 3-Second Cinematic Intro Animation Screen (Simple & Professional) -->
+    <div id="intro-screen" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center transition-opacity duration-1000 overflow-hidden">
+        <canvas id="intro-canvas"></canvas>
+        <div class="relative z-20 text-center px-4 max-w-xl pointer-events-none space-y-3">
+            <div class="inline-flex p-4 rounded-full bg-water-500/20 backdrop-blur-md border border-water-400/30 shadow-2xl animate-pulse">
+                <i class="fa-solid fa-droplet text-5xl text-water-400"></i>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold text-white tracking-wide font-urdu pt-2">سالار واٹر پلانٹ</h1>
+            <p class="text-slate-300 text-sm md:text-base tracking-widest uppercase font-light">Salar Pure Drinking Water Systems</p>
+            <div class="mt-6 w-48 h-1.5 bg-slate-800 rounded-full mx-auto overflow-hidden">
+                <div id="intro-progress" class="h-full bg-gradient-to-r from-water-500 to-cyan-300 w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header with generous professional spacing -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-water-600 to-cyan-400 flex items-center justify-center text-white shadow-md shadow-water-500/20 shrink-0">
+                        <i class="fa-solid fa-water text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 font-urdu tracking-wide mb-1.5">سالار واٹر پلانٹ</h2>
+                        <div id="live-datetime" class="text-xs text-slate-500 font-medium flex items-center gap-2 pt-1">
+                            <i class="fa-regular fa-clock text-water-600"></i> <span>---</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                <button onclick="switchTab('client')" id="btn-client" class="flex-1 sm:flex-initial px-5 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-water-600 text-white shadow-md shadow-water-600/20">
+                    <i class="fa-solid fa-users"></i>
+                    <span>کلائنٹ پورٹل</span>
+                </button>
+                <button onclick="openAdminModal()" id="btn-admin" class="flex-1 sm:flex-initial px-5 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Grand Admin</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Application Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
+        
+        <!-- CLIENT PORTAL VIEW -->
+        <div id="view-client" class="space-y-10">
+            <div class="bg-gradient-to-r from-slate-900 via-water-900 to-slate-900 rounded-3xl p-8 md:p-12 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-96 h-96 bg-water-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-2xl space-y-6">
+                    <span class="inline-block px-4 py-1.5 rounded-full bg-water-500/20 border border-water-400/30 text-water-300 text-xs font-semibold">
+                        خالص اور صاف پانی کی ترسیل
+                    </span>
+                    <h1 class="text-3xl md:text-4xl font-bold font-urdu leading-tight pt-1">آپ کے گھر اور دفتر کے لیے</h1>
+                    <p class="text-slate-300 text-sm md:text-base font-light leading-relaxed pt-2">
+                        بہترین معیار کا فلٹر پانی۔ نیچے اپنے نام اور بوتلوں کی تعداد درج کر کے فوری ریکارڈ محفوظ کریں۔
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Entry Form -->
+                <div class="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+                    <div class="border-b border-slate-100 pb-4">
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2.5">
+                            <i class="fa-solid fa-file-pen text-water-600"></i>
+                            <span>نیا آرڈر یا کلائنٹ درج کریں</span>
+                        </h3>
+                    </div>
+                    
+                    <form id="client-form" onsubmit="handleClientSubmit(event)" class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-slate-700">کلائنٹ کا نام (English / اردو)</label>
+                            <input type="text" id="client-name" required placeholder="e.g. Muhammad Ali" oninput="transliterateName(this.value)"
+                                class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-water-500 focus:border-transparent text-slate-800 text-sm transition-all bg-slate-50/50">
+                            <div class="pt-2 text-xs text-water-600 font-semibold flex items-center gap-2 font-urdu">
+                                <i class="fa-solid fa-language text-sm"></i>
+                                <span>اردو نام: <span id="urdu-name-preview" class="text-slate-800 font-bold">---</span></span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-sm font-semibold text-slate-700">فون نمبر</label>
+                            <input type="tel" id="client-phone" required placeholder="03001234567"
+                                class="w-full px-4 py-3.5 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-water-500 focus:border-transparent text-slate-800 text-sm transition-all bg-slate-50/50">
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-sm font-semibold text-slate-700">بوتلوں کی تعداد</label>
+                                <span class="text-xs text-slate-500 font-medium">آటో کیلکولیشن</span>
+                            </div>
+                            <div class="relative">
+                                <input type="number" id="client-bottles" min="1" value="1" required oninput="calculateTotal()"
+                                    class="w-full px-4 py-3.5 pl-20 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-water-500 focus:border-transparent text-slate-800 text-lg font-bold transition-all bg-slate-50/50">
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold px-3 py-1.5 rounded-xl bg-water-100 text-water-700">
+                                    بوتلیں
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-water-50 border border-water-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-slate-500 block mb-1">کل رقم (Total Amount)</span>
+                                <span id="calc-total-display" class="text-2xl font-black text-water-900">50 PKR</span>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-water-600 text-white flex items-center justify-center shadow-md">
+                                <i class="fa-solid fa-calculator text-lg"></i>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 rounded-2xl bg-water-600 hover:bg-water-700 text-white font-semibold transition-all shadow-lg shadow-water-600/30 flex items-center justify-center gap-2.5">
+                            <i class="fa-solid fa-check-circle"></i>
+                            <span>ریکارڈ محفوظ کریں</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Client List & Search Bar View -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+                            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2.5">
+                                <i class="fa-solid fa-clipboard-list text-water-600"></i>
+                                <span>حالیہ کلائنٹس اور کارڈز</span>
+                            </h3>
+                            <span id="client-count-badge" class="px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">0 کلائنٹس</span>
+                        </div>
+
+                        <!-- Client Search Bar -->
+                        <div class="relative">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
+                            <input type="text" id="client-search" placeholder="کلائنٹ تلاش کریں (نام یا فون نمبر درج کریں)..." oninput="filterClients(this.value)"
+                                class="w-full pl-4 pr-12 py-3.5 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-water-500 focus:border-transparent text-slate-800 text-sm transition-all bg-slate-50/50">
+                        </div>
+
+                        <div id="clients-container" class="space-y-4 max-h-[460px] overflow-y-auto pr-1">
+                            <div class="text-center py-16 text-slate-400 text-sm space-y-3">
+                                <i class="fa-solid fa-box-open text-4xl text-slate-300 block"></i>
+                                <p>کوئی ریکارڈ موجود نہیں ہے۔ براہ کرم نیا کلائنٹ درج کریں۔</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRAND ADMIN PORTAL VIEW -->
+        <div id="view-admin" class="hidden space-y-10">
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2 text-water-400 text-xs font-semibold tracking-wider uppercase">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Grand Admin Portal</span>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-bold font-urdu pt-1">انتظامیہ ڈیش بورڈ</h1>
+                    <p class="text-slate-300 text-sm pt-2">مالک اور منتظم: <span class="text-white font-bold font-urdu">لیاقت علی پتافی</span></p>
+                    <div id="admin-live-datetime" class="text-xs text-slate-400 pt-1 flex items-center gap-2">
+                        <i class="fa-regular fa-clock text-water-400"></i> <span>---</span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-4 w-full md:w-auto">
+                    <div class="px-6 py-4 rounded-2xl bg-slate-800/80 border border-slate-700 text-center flex-1 md:flex-initial">
+                        <span class="text-xs text-slate-400 block mb-1">کل ریونیو</span>
+                        <span id="admin-total-revenue" class="text-xl sm:text-2xl font-black text-water-400">0 PKR</span>
+                    </div>
+                    <div class="px-6 py-4 rounded-2xl bg-slate-800/80 border border-slate-700 text-center flex-1 md:flex-initial">
+                        <span class="text-xs text-slate-400 block mb-1">کل بوتلیں</span>
+                        <span id="admin-total-bottles" class="text-xl sm:text-2xl font-black text-white">0</span>
+                    </div>
+                    <button onclick="logoutAdmin()" class="px-5 py-4 rounded-2xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 text-sm font-semibold transition-all border border-rose-500/30 w-full md:w-auto flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-right-from-bracket"></i> لاگ آؤٹ
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2.5">
+                        <i class="fa-solid fa-database text-water-600"></i>
+                        <span>تمام کلائنٹس اور بوتلوں کا مکمل ریکارڈ (انتظامیہ اختیارات)</span>
+                    </h3>
+                    <button onclick="exportData()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-download"></i> ڈیٹا ایکسپورٹ
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-slate-500 text-xs uppercase tracking-wider bg-slate-50">
+                                <th class="py-4 px-4 font-semibold rounded-r-xl">#</th>
+                                <th class="py-4 px-4 font-semibold">کلائنٹ کا نام (Urdu)</th>
+                                <th class="py-4 px-4 font-semibold">فون نمبر</th>
+                                <th class="py-4 px-4 font-semibold">بوتلوں کی تعداد</th>
+                                <th class="py-4 px-4 font-semibold">کل رقم (PKR)</th>
+                                <th class="py-4 px-4 font-semibold">تاریخ و وقت</th>
+                                <th class="py-4 px-4 font-semibold rounded-l-xl text-center">انتظامیہ ایکشن (حذف کریں)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-slate-100 text-sm text-slate-700">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- PIN Code Modal for Grand Admin (No hint provided) -->
+    <div id="admin-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-slate-200 transform transition-all space-y-6">
+            <div class="text-center space-y-3">
+                <div class="w-16 h-16 rounded-2xl bg-water-100 text-water-600 flex items-center justify-center mx-auto text-2xl shadow-inner">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 font-urdu">Grand Admin لاگ ان</h3>
+                <p class="text-xs text-slate-500">ڈیش بورڈ تک رسائی کے لیے پن کوڈ درج کریں</p>
+            </div>
+
+            <form onsubmit="verifyAdminPin(event)" class="space-y-4">
+                <div>
+                    <input type="password" id="admin-pin-input" maxlength="3" required placeholder="PIN Code"
+                        class="w-full text-center tracking-widest text-2xl py-4 rounded-2xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-water-500 font-bold bg-slate-50">
+                </div>
+                <div id="pin-error" class="text-xs text-rose-500 text-center font-semibold hidden">غلط پن کوڈ! براہ کرم درست پن درج کریں</div>
+                
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeAdminModal()" class="flex-1 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition-all">
+                        منسوخ کریں
+                    </button>
+                    <button type="submit" class="flex-1 py-3.5 rounded-2xl bg-water-600 hover:bg-water-700 text-white text-sm font-semibold transition-all shadow-md shadow-water-600/30">
+                        داخل ہوں
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Printable Client Card Modal -->
+    <div id="card-modal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 relative space-y-6">
+            <button onclick="closeCardModal()" class="absolute top-4 left-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Printable Card Design -->
+            <div id="printable-card" class="bg-gradient-to-br from-slate-900 via-water-900 to-slate-900 rounded-3xl p-6 text-white shadow-xl border border-water-500/30 relative overflow-hidden my-2 space-y-5">
+                <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-water-500/20 rounded-full blur-2xl"></div>
+                
+                <div class="flex justify-between items-start border-b border-water-500/30 pb-4">
+                    <div class="space-y-1">
+                        <h4 class="text-lg font-bold font-urdu">سالار واٹر پلانٹ</h4>
+                        <p class="text-[10px] text-water-300 tracking-wider">Salar Pure Water Distribution Card</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-water-500/20 border border-water-400/30 flex items-center justify-center text-water-300">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between items-center bg-white/5 px-4 py-2.5 rounded-2xl border border-white/10">
+                        <span class="text-slate-300 text-xs">کلائنٹ کا نام:</span>
+                        <span id="card-modal-name" class="font-bold font-urdu">---</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white/5 px-4 py-2.5 rounded-2xl border border-white/10">
+                        <span class="text-slate-300 text-xs">فون نمبر:</span>
+                        <span id="card-modal-phone" class="font-bold">---</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white/5 px-4 py-2.5 rounded-2xl border border-white/10">
+                        <span class="text-slate-300 text-xs">بوتلوں کی تعداد:</span>
+                        <span id="card-modal-bottles" class="font-bold text-water-300">0</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white/5 px-4 py-2.5 rounded-2xl border border-white/10">
+                        <span class="text-slate-300 text-xs">کل قابل ادائیگی رقم:</span>
+                        <span id="card-modal-amount" class="font-bold text-cyan-300">0 PKR</span>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-water-500/30 flex justify-between items-center text-[11px] text-slate-400">
+                    <span>انتظامیہ: لیاقت علی پتافی</span>
+                    <span id="card-modal-date">---</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="window.print()" class="flex-1 py-3.5 rounded-2xl bg-water-600 hover:bg-water-700 text-white text-sm font-semibold transition-all shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i> پرنٹ کریں
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let clients = JSON.parse(localStorage.getItem('salar_clients') || '[]');
+        const PRICE_PER_BOTTLE = 50;
+
+        function updateLiveDateTime() {
+            const now = new Date();
+            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            
+            const dateStr = now.toLocaleDateString('ur-PK', optionsDate);
+            const timeStr = now.toLocaleTimeString('ur-PK', optionsTime);
+            
+            const formattedDateTime = `${dateStr} | ${timeStr}`;
+            
+            const headerClock = document.getElementById('live-datetime');
+            if (headerClock) {
+                headerClock.innerHTML = `<i class="fa-regular fa-clock text-water-600"></i> <span>${formattedDateTime}</span>`;
+            }
+
+            const adminClock = document.getElementById('admin-live-datetime');
+            if (adminClock) {
+                adminClock.innerHTML = `<i class="fa-regular fa-clock text-water-400"></i> <span>${formattedDateTime}</span>`;
+            }
+        }
+        setInterval(updateLiveDateTime, 1000);
+        updateLiveDateTime();
+
+        // Exactly 3-Second Cinematic Intro Animation with Canvas (Simple & Professional)
+        window.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('intro-canvas');
+            const ctx = canvas.getContext('2d');
+            const introScreen = document.getElementById('intro-screen');
+            const progressBar = document.getElementById('intro-progress');
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            let startTime = Date.now();
+            let duration = 3000; // exactly 3 seconds
+
+            function animateIntro() {
+                let elapsed = Date.now() - startTime;
+                let progress = Math.min(elapsed / duration, 1);
+                progressBar.style.width = (progress * 100) + '%';
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                let cx = canvas.width / 2;
+                let cy = canvas.height / 2;
+
+                ctx.save();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                let gTopW = 70;
+                let gBotW = 50;
+                let gHeight = 160;
+                let startY = cy - 40;
+
+                ctx.moveTo(cx - gTopW, startY);
+                ctx.lineTo(cx + gTopW, startY);
+                ctx.lineTo(cx + gBotW, startY + gHeight);
+                ctx.lineTo(cx - gBotW, startY + gHeight);
+                ctx.closePath();
+                ctx.stroke();
+
+                let streamWidth = 8 * (1 - progress * 0.3);
+                let gradient = ctx.createLinearGradient(cx, 0, cx, startY);
+                gradient.addColorStop(0, 'rgba(14, 165, 233, 0.8)');
+                gradient.addColorStop(1, 'rgba(56, 189, 248, 0.4)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(cx - streamWidth/2, 0, streamWidth, startY);
+
+                let filledHeight = gHeight * progress;
+                let currentWaterTop = startY + gHeight - filledHeight;
+                
+                ctx.fillStyle = 'rgba(14, 165, 233, 0.35)';
+                ctx.beginPath();
+                ctx.moveTo(cx - gBotW + 4, startY + gHeight - 4);
+                ctx.lineTo(cx + gBotW - 4, startY + gHeight - 4);
+                let ratio = (currentWaterTop - startY) / gHeight;
+                let curWidth = gBotW + (gTopW - gBotW) * ratio;
+                ctx.lineTo(cx + curWidth - 4, currentWaterTop);
+                ctx.lineTo(cx - curWidth + 4, currentWaterTop);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(cx - curWidth + 4, currentWaterTop);
+                ctx.lineTo(cx + curWidth - 4, currentWaterTop);
+                ctx.stroke();
+
+                ctx.restore();
+
+                if (elapsed < duration) {
+                    requestAnimationFrame(animateIntro);
+                } else {
+                    introScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        introScreen.style.display = 'none';
+                    }, 1000);
+                }
+            }
+
+            requestAnimationFrame(animateIntro);
+            renderClients(clients);
+        });
+
+        const urduDictionary = {
+            'muhammad': 'محمد', 'ahmad': 'احمد', 'ali': 'علی', 'liaqat': 'لیاقت', 'pitafi': 'پتافی',
+            'salar': 'سالار', 'khan': 'خان', 'malik': 'ملک', 'hassan': 'حسن', 'hussain': 'حسین',
+            'usman': 'عثمان', 'umer': 'عمر', 'bilal': 'بلال', 'zain': 'زین', 'hamza': 'حمزہ',
+            'abdullah': 'عبداللہ', 'abdul': 'عبدالرحمن', 'rehman': 'رحمان', 'farooq': 'فاروق',
+            'nasir': 'نصیر', 'tariq': 'طارق', 'shahid': 'شاہد', 'imran': 'عمران', 'kamal': 'کمال'
+        };
+
+        function transliterateName(englishText) {
+            const preview = document.getElementById('urdu-name-preview');
+            if (!englishText.trim()) {
+                preview.textContent = '---';
+                return;
+            }
+            let words = englishText.toLowerCase().trim().split(/\s+/);
+            let translatedWords = words.map(word => {
+                if (urduDictionary[word]) return urduDictionary[word];
+                return word.replace(/a/g, 'ا').replace(/b/g, 'ب').replace(/t/g, 'ت').replace(/s/g, 'س')
+                           .replace(/m/g, 'م').replace(/d/g, 'د').replace(/n/g, 'ن').replace(/l/g, 'ل')
+                           .replace(/i/g, 'ی').replace(/k/g, 'ک').replace(/h/g, 'ح').replace(/r/g, 'ر');
+            });
+            let result = translatedWords.join(' ');
+            preview.textContent = result;
+        }
+
+        function calculateTotal() {
+            const bottles = parseInt(document.getElementById('client-bottles').value) || 0;
+            const total = bottles * PRICE_PER_BOTTLE;
+            document.getElementById('calc-total-display').textContent = total.toLocaleString() + ' PKR';
+        }
+
+        function handleClientSubmit(e) {
+            e.preventDefault();
+            const nameEng = document.getElementById('client-name').value.trim();
+            const nameUrdu = document.getElementById('urdu-name-preview').textContent;
+            const phone = document.getElementById('client-phone').value.trim();
+            const bottles = parseInt(document.getElementById('client-bottles').value) || 1;
+            const totalAmount = bottles * PRICE_PER_BOTTLE;
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ur-PK', { year: 'numeric', month: 'short', day: 'numeric' }) + ' | ' + now.toLocaleTimeString('ur-PK', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+            const newClient = {
+                id: Date.now(),
+                nameEng,
+                nameUrdu: nameUrdu !== '---' ? nameUrdu : nameEng,
+                phone,
+                bottles,
+                totalAmount,
+                date: dateStr
+            };
+
+            clients.unshift(newClient);
+            localStorage.setItem('salar_clients', JSON.stringify(clients));
+
+            document.getElementById('client-form').reset();
+            document.getElementById('urdu-name-preview').textContent = '---';
+            document.getElementById('calc-total-display').textContent = '50 PKR';
+            document.getElementById('client-search').value = '';
+
+            renderClients(clients);
+            showToast('کلائنٹ کا ریکارڈ کامیابی سے محفوظ ہو گیا ہے!');
+        }
+
+        function filterClients(query) {
+            const q = query.trim().toLowerCase();
+            if (!q) {
+                renderClients(clients);
+                return;
+            }
+            const filtered = clients.filter(c => 
+                c.nameEng.toLowerCase().includes(q) || 
+                c.nameUrdu.toLowerCase().includes(q) || 
+                c.phone.includes(q)
+            );
+            renderClients(filtered);
+        }
+
+        function renderClients(list) {
+            const container = document.getElementById('clients-container');
+            const badge = document.getElementById('client-count-badge');
+            badge.textContent = clients.length + ' کلائنٹس';
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-slate-400 text-sm space-y-3">
+                        <i class="fa-solid fa-box-open text-4xl text-slate-300 block"></i>
+                        <p>کوئی مطلوبہ ریکارڈ نہیں ملا۔</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = list.map((c, index) => `
+                <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-water-300 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-water-100 text-water-700 font-bold flex items-center justify-center shrink-0 shadow-sm">
+                            ${index + 1}
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-slate-900 font-urdu text-base">${c.nameUrdu}</h4>
+                            <p class="text-xs text-slate-500">${c.phone} • <span class="text-water-600 font-semibold">${c.bottles} بوتلیں (${c.totalAmount} PKR)</span></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+                        <button onclick="openCardModal(${c.id})" class="px-4 py-2.5 rounded-xl bg-water-600 hover:bg-water-700 text-white text-xs font-semibold transition-all shadow-sm flex items-center gap-2">
+                            <i class="fa-solid fa-id-card"></i> کارڈ دیکھیں
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            updateAdminView();
+        }
+
+        function deleteClient(id) {
+            clients = clients.filter(c => c.id !== id);
+            localStorage.setItem('salar_clients', JSON.stringify(clients));
+            const searchQuery = document.getElementById('client-search').value;
+            if (searchQuery) {
+                filterClients(searchQuery);
+            } else {
+                renderClients(clients);
+            }
+            showToast('ریکارڈ انتظامیہ کی طرف سے حذف کر دیا گیا ہے۔');
+        }
+
+        function switchTab(tab) {
+            const viewClient = document.getElementById('view-client');
+            const viewAdmin = document.getElementById('view-admin');
+            const btnClient = document.getElementById('btn-client');
+            const btnAdmin = document.getElementById('btn-admin');
+
+            if (tab === 'client') {
+                viewClient.classList.remove('hidden');
+                viewAdmin.classList.add('hidden');
+                btnClient.className = "flex-1 sm:flex-initial px-5 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-water-600 text-white shadow-md shadow-water-600/20";
+                btnAdmin.className = "flex-1 sm:flex-initial px-5 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700";
+            }
+        }
+
+        function openAdminModal() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+            document.getElementById('admin-pin-input').value = '';
+            document.getElementById('pin-error').classList.add('hidden');
+            document.getElementById('admin-pin-input').focus();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('admin-pin-input').value;
+            if (pin === '110') {
+                closeAdminModal();
+                showAdminDashboard();
+            } else {
+                document.getElementById('pin-error').classList.remove('hidden');
+            }
+        }
+
+        function showAdminDashboard() {
+            const viewClient = document.getElementById('view-client');
+            const viewAdmin = document.getElementById('view-admin');
+            const btnClient = document.getElementById('btn-client');
+            const btnAdmin = document.getElementById('btn-admin');
+
+            viewClient.classList.add('hidden');
+            viewAdmin.classList.remove('hidden');
+            btnAdmin.className = "flex-1 sm:flex-initial px-5 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-slate-900 text-white shadow-md";
+            btnClient.className = "flex-1 sm:flex-initial px-5 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700";
+            
+            updateAdminView();
+        }
+
+        function logoutAdmin() {
+            switchTab('client');
+        }
+
+        function updateAdminView() {
+            const tbody = document.getElementById('admin-table-body');
+            let totalBottles = 0;
+            let totalRevenue = 0;
+
+            if (clients.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-10 text-slate-400">کوئی ڈیٹا موجود نہیں ہے</td></tr>`;
+            } else {
+                tbody.innerHTML = clients.map((c, i) => {
+                    totalBottles += c.bottles;
+                    totalRevenue += c.totalAmount;
+                    return `
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="py-4 px-4 font-semibold text-slate-500">${i + 1}</td>
+                            <td class="py-4 px-4 font-bold font-urdu text-slate-900">${c.nameUrdu}</td>
+                            <td class="py-4 px-4 font-medium">${c.phone}</td>
+                            <td class="py-4 px-4 font-bold text-water-700">${c.bottles} بوتلیں</td>
+                            <td class="py-4 px-4 font-bold text-slate-900">${c.totalAmount} PKR</td>
+                            <td class="py-4 px-4 text-xs text-slate-500">${c.date}</td>
+                            <td class="py-4 px-4 text-center">
+                                <button onclick="deleteClient(${c.id})" class="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 transition-all font-semibold text-xs flex items-center gap-1.5 mx-auto">
+                                    <i class="fa-solid fa-trash-can"></i> حذف کریں
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('admin-total-bottles').textContent = totalBottles;
+            document.getElementById('admin-total-revenue').textContent = totalRevenue.toLocaleString() + ' PKR';
+        }
+
+        function openCardModal(id) {
+            const client = clients.find(c => c.id === id);
+            if (!client) return;
+
+            document.getElementById('card-modal-name').textContent = client.nameUrdu;
+            document.getElementById('card-modal-phone').textContent = client.phone;
+            document.getElementById('card-modal-bottles').textContent = client.bottles + ' بوتلیں';
+            document.getElementById('card-modal-amount').textContent = client.totalAmount + ' PKR';
+            document.getElementById('card-modal-date').textContent = client.date;
+
+            document.getElementById('card-modal').classList.remove('hidden');
+        }
+
+        function closeCardModal() {
+            document.getElementById('card-modal').classList.add('hidden');
+        }
+
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(clients, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "salar_water_plant_records.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-6 py-3.5 rounded-2xl shadow-2xl border border-slate-700 text-sm font-semibold flex items-center gap-3 transform translate-y-10 opacity-0 transition-all duration-300";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-water-400 text-lg"></i><span>${message}</span>`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
